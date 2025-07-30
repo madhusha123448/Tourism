@@ -1,0 +1,17 @@
+{
+"type": "FeatureCollection",
+"name": "ANCIENT",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "site_name": null, "site_name_": null, "period": null, "descriptio": null, "TYPE": "Ancient" }, "geometry": { "type": "Point", "coordinates": [ 79.923280888577935, 8.981607990190291 ] } },
+{ "type": "Feature", "properties": { "site_name": "Baobab Tree at Pomparippu Aru", "site_name_": null, "period": null, "descriptio": "Baobab Tree at Pomparippu Aru", "TYPE": "Ancient" }, "geometry": { "type": "Point", "coordinates": [ 79.845442635916612, 8.323763674285834 ] } },
+{ "type": "Feature", "properties": { "site_name": "Doric banglow", "site_name_": null, "period": null, "descriptio": "Doric banglow", "TYPE": "Ancient" }, "geometry": { "type": "Point", "coordinates": [ 79.934483658365707, 8.780814238413829 ] } },
+{ "type": "Feature", "properties": { "site_name": "Dutch Fort", "site_name_": null, "period": null, "descriptio": "Dutch Fort", "TYPE": "Ancient" }, "geometry": { "type": "Point", "coordinates": [ 79.929732767736695, 8.792904202102964 ] } },
+{ "type": "Feature", "properties": { "site_name": "Light house", "site_name_": null, "period": null, "descriptio": "Light house", "TYPE": "Ancient" }, "geometry": { "type": "Point", "coordinates": [ 79.698271073060553, 9.094655095128294 ] } },
+{ "type": "Feature", "properties": { "site_name": null, "site_name_": null, "period": null, "descriptio": null, "TYPE": "Ancient" }, "geometry": { "type": "Point", "coordinates": [ 79.62548064165307, 9.068685204351759 ] } },
+{ "type": "Feature", "properties": { "site_name": null, "site_name_": null, "period": null, "descriptio": null, "TYPE": "Ancient" }, "geometry": { "type": "Point", "coordinates": [ 79.617336257719032, 9.07418092525239 ] } },
+{ "type": "Feature", "properties": { "site_name": null, "site_name_": null, "period": null, "descriptio": null, "TYPE": "Ancient" }, "geometry": { "type": "Point", "coordinates": [ 79.48011187216774, 9.140834955662125 ] } },
+{ "type": "Feature", "properties": { "site_name": null, "site_name_": null, "period": null, "descriptio": null, "TYPE": "Ancient" }, "geometry": { "type": "Point", "coordinates": [ 79.517576038263357, 9.109473843651093 ] } },
+{ "type": "Feature", "properties": { "site_name": null, "site_name_": null, "period": null, "descriptio": null, "TYPE": "Ancient" }, "geometry": { "type": "Point", "coordinates": [ 79.585988863307037, 9.084543816213202 ] } }
+]
+}

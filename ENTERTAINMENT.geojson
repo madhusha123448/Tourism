@@ -1,0 +1,11 @@
+{
+"type": "FeatureCollection",
+"name": "ENTERTAINMENT",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "site_name": "Camping", "site_name_": null, "period": null, "descriptio": "Other", "TYPE": "camping" }, "geometry": { "type": "Point", "coordinates": [ 79.694188806719183, 8.211021178220957 ] } },
+{ "type": "Feature", "properties": { "site_name": null, "site_name_": null, "period": null, "descriptio": null, "TYPE": "Entertainment" }, "geometry": { "type": "Point", "coordinates": [ 79.71601639194111, 8.217894920156256 ] } },
+{ "type": "Feature", "properties": { "site_name": null, "site_name_": null, "period": null, "descriptio": null, "TYPE": "Entertainment" }, "geometry": { "type": "Point", "coordinates": [ 79.831363880591539, 8.024977001118804 ] } },
+{ "type": "Feature", "properties": { "site_name": "Kite Surfing", "site_name_": null, "period": null, "descriptio": null, "TYPE": "Kite Surfing" }, "geometry": { "type": "Point", "coordinates": [ 79.757696946675182, 8.249371767081538 ] } }
+]
+}

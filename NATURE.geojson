@@ -1,0 +1,12 @@
+{
+"type": "FeatureCollection",
+"name": "NATURE",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "site_name": "Lagoon", "site_name_": null, "period": null, "descriptio": "Lagoon", "TYPE": "Nature" }, "geometry": { "type": "Point", "coordinates": [ 79.92446436937891, 8.797615995126979 ] } },
+{ "type": "Feature", "properties": { "site_name": "Malwathu Oya", "site_name_": null, "period": null, "descriptio": "Malwathu Oya", "TYPE": "Nature" }, "geometry": { "type": "Point", "coordinates": [ 79.933397740506535, 8.80297328123897 ] } },
+{ "type": "Feature", "properties": { "site_name": null, "site_name_": null, "period": null, "descriptio": "Coral", "TYPE": "Nature" }, "geometry": { "type": "Point", "coordinates": [ 79.993751018939818, 9.071609005288428 ] } },
+{ "type": "Feature", "properties": { "site_name": null, "site_name_": null, "period": null, "descriptio": null, "TYPE": "Nature" }, "geometry": { "type": "Point", "coordinates": [ 80.02207903397661, 9.041409612949309 ] } },
+{ "type": "Feature", "properties": { "site_name": "Barreef", "site_name_": null, "period": null, "descriptio": null, "TYPE": "Nature" }, "geometry": { "type": "Point", "coordinates": [ 79.743427254324558, 8.392409361135133 ] } }
+]
+}

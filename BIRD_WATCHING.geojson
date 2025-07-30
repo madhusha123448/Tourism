@@ -1,0 +1,14 @@
+{
+"type": "FeatureCollection",
+"name": "BIRD_WATCHING",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "site_name": null, "site_name_": null, "period": null, "descriptio": null, "TYPE": "Bird watching" }, "geometry": { "type": "Point", "coordinates": [ 79.916099408372844, 8.92197884168829 ] } },
+{ "type": "Feature", "properties": { "site_name": null, "site_name_": null, "period": null, "descriptio": null, "TYPE": "Bird watching" }, "geometry": { "type": "Point", "coordinates": [ 79.921528997661838, 8.932002480320502 ] } },
+{ "type": "Feature", "properties": { "site_name": "Adam's Bridge", "site_name_": null, "period": null, "descriptio": null, "TYPE": "Bird watching" }, "geometry": { "type": "Point", "coordinates": [ 79.644594047685231, 9.077564872676886 ] } },
+{ "type": "Feature", "properties": { "site_name": "Vankalai Sanctuary", "site_name_": null, "period": null, "descriptio": null, "TYPE": "Bird watching" }, "geometry": { "type": "Point", "coordinates": [ 79.872351337336411, 9.031923087088849 ] } },
+{ "type": "Feature", "properties": { "site_name": "Vidaththaltheevu", "site_name_": null, "period": null, "descriptio": null, "TYPE": "Bird watching" }, "geometry": { "type": "Point", "coordinates": [ 80.03822983803822, 9.017941123727581 ] } },
+{ "type": "Feature", "properties": { "site_name": "Gaint Tank", "site_name_": null, "period": null, "descriptio": null, "TYPE": "Bird watching" }, "geometry": { "type": "Point", "coordinates": [ 80.055680852650156, 8.872743591691783 ] } },
+{ "type": "Feature", "properties": { "site_name": "Anawilundawa Bird Sanctuary", "site_name_": null, "period": null, "descriptio": null, "TYPE": "Bird watching" }, "geometry": { "type": "Point", "coordinates": [ 79.811964633484052, 7.706098275720143 ] } }
+]
+}

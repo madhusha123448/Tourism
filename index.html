@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Potential Tourism Sites Mapper</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      overflow: hidden;
+    }
+
+    #map {
+      height: 100vh;
+      width: 100vw;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    h2 {
+      text-align: center;
+      text-transform: uppercase;
+      margin: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      z-index: 1000;
+      position: relative;
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .ui-container {
+      position: absolute;
+      top: 80px;
+      left: 20px;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 20px;
+      width: 450px;
+      max-height: calc(100vh - 140px);
+      overflow-y: auto;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      animation: slideIn 0.6s ease-out;
+    }
+
+    /* Custom scrollbar for the container */
+    .ui-container::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .ui-container::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.1);
+      border-radius: 4px;
+    }
+
+    .ui-container::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 4px;
+    }
+
+    .ui-container::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .legend {
+      position: absolute;
+      bottom: 20px;
+      left: 490px;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 15px 20px;
+      border-radius: 15px;
+      font-size: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      animation: fadeIn 0.8s ease-out;
+      max-width: 300px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .legend strong {
+      color: #333;
+      font-size: 16px;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+      padding: 5px 0;
+      transition: transform 0.2s;
+    }
+
+    .legend-item:hover {
+      transform: translateX(5px);
+    }
+
+    .legend-item img {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+      border-radius: 4px;
+    }
+
+    /* Enhanced Tab Styles */
+    .tab-nav {
+      display: flex;
+      margin-bottom: 25px;
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 5px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 12px 20px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      border-radius: 8px;
+      color: #666;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tab-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: left 0.5s;
+    }
+
+    .tab-btn:hover::before {
+      left: 100%;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .tab-btn:hover:not(.active) {
+      background: rgba(102, 126, 234, 0.1);
+      color: #667eea;
+    }
+
+    .form-section {
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .form-section h3 {
+      margin-bottom: 20px;
+      color: #333;
+      font-size: 18px;
+      font-weight: 600;
+      text-align: center;
+      position: relative;
+    }
+
+    .form-section h3::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 2px;
+    }
+
+    /* Enhanced Form Styles */
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      padding-bottom: 10px;
+    }
+
+    label {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 3px;
+      display: block;
+      font-size: 14px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px 15px;
+      border: 2px solid #e1e5e9;
+      border-radius: 10px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      background: white;
+      color: #333;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      transform: translateY(-1px);
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: #999;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 70px;
+      font-family: inherit;
+    }
+
+    /* Enhanced Button Styles */
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    button[type="submit"] {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    button[type="submit"]:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    button[type="button"] {
+      background: #f8f9fa;
+      color: #666;
+      border: 2px solid #e1e5e9;
+    }
+
+    button[type="button"]:hover {
+      background: #e9ecef;
+      color: #333;
+      transform: translateY(-1px);
+    }
+
+    /* Button Group */
+    .button-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .button-group button {
+      flex: 1;
+      min-width: 120px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+      .ui-container {
+        width: 400px;
+      }
+      
+      .legend {
+        left: 440px;
+        max-width: 250px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .ui-container {
+        left: 10px;
+        right: 10px;
+        width: calc(100vw - 20px);
+        max-width: none;
+        top: 70px;
+      }
+      
+      .legend {
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        max-width: none;
+      }
+    }
+
+    /* Loading Animation */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Success Animation */
+    .success-animation {
+      animation: successPulse 0.6s ease-out;
+    }
+
+    @keyframes successPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* Notification System */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 10000;
+      max-width: 400px;
+      animation: slideInRight 0.3s ease-out;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .notification-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 20px;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .notification-success {
+      background: linear-gradient(135deg, #4CAF50, #45a049);
+      color: white;
+    }
+
+    .notification-error {
+      background: linear-gradient(135deg, #f44336, #d32f2f);
+      color: white;
+    }
+
+    .notification-info {
+      background: linear-gradient(135deg, #2196F3, #1976D2);
+      color: white;
+    }
+
+    .notification-message {
+      flex: 1;
+      margin-right: 10px;
+      font-weight: 500;
+    }
+
+    .notification-close {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 0;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background-color 0.2s;
+    }
+
+    .notification-close:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    /* Enhanced Map Popup Styles */
+    .leaflet-popup-content-wrapper {
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .leaflet-popup-content {
+      margin: 15px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .leaflet-popup-tip {
+      background: white;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Tourism Site Rating & Suggestion</h2>
+
+<div class="ui-container">
+  <!-- Tab Navigation -->
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="showTab('rating')">Rate Location</button>
+    <button class="tab-btn" onclick="showTab('suggest')">Suggest New Site</button>
+  </div>
+
+  <!-- Rating Form -->
+  <div id="rating-form" class="form-section">
+    <h3>Rate an Existing Tourism Site</h3>
+    <form id="ratingForm" onsubmit="event.preventDefault(); submitRatingForm();">
+      <label for="ratingSiteName">Site Name:</label><br>
+      <input type="text" id="ratingSiteName" required><br><br>
+
+      <label for="ratingValue">Rate this location (1-5):</label><br>
+      <select id="ratingValue" required>
+        <option value="">Select Rating</option>
+        <option value="1">1 - Poor</option>
+        <option value="2">2 - Fair</option>
+        <option value="3">3 - Good</option>
+        <option value="4">4 - Very Good</option>
+        <option value="5">5 - Excellent</option>
+      </select><br><br>
+
+      <label for="ratingIssue">Report an issue (optional):</label><br>
+      <textarea id="ratingIssue" rows="3" cols="30" placeholder="Describe any issues or problems..."></textarea><br><br>
+
+             <div class="button-group">
+         <button type="submit">✅ Submit Rating</button>
+         <button type="button" onclick="clearRatingForm()">🗑️ Clear</button>
+       </div>
+    </form>
+  </div>
+
+  <!-- Suggestion Form -->
+  <div id="suggest-form" class="form-section" style="display: none;">
+    <h3>Suggest a New Tourism Site</h3>
+    <form id="suggestForm" onsubmit="event.preventDefault(); submitSuggestForm();">
+      <label for="suggestSiteName">Site Name:</label><br>
+      <input type="text" id="suggestSiteName" required><br><br>
+
+      <label for="suggestLocation">Location (coordinates):</label><br>
+      <input type="text" id="suggestLocation" readonly placeholder="Click on map or use your location"><br><br>
+
+      <label for="suggestComments">Comments / Description:</label><br>
+      <textarea id="suggestComments" rows="4" cols="30" required placeholder="Describe the site, its attractions, accessibility..."></textarea><br><br>
+
+      <label for="suggestType">Type of Site:</label><br>
+      <select id="suggestType" required>
+        <option value="">Select Type</option>
+      <option value="Natural">Natural</option>
+      <option value="Cultural">Cultural</option>
+      <option value="Adventure">Adventure</option>
+        <option value="Historical">Historical</option>
+        <option value="Religious">Religious</option>
+        <option value="Entertainment">Entertainment</option>
+    </select><br><br>
+
+             <div class="button-group">
+         <button type="submit">💡 Submit Suggestion</button>
+         <button type="button" onclick="clearSuggestForm()">🗑️ Clear</button>
+    <button type="button" onclick="getCurrentLocation()">📍 Use My Location</button>
+       </div>
+  </form>
+  </div>
+</div>
+
+<div class="legend">
+  <strong>Legend</strong>
+  <div class="legend-item"><img src="Beach.png"> Beach</div>
+  <div class="legend-item"><img src="Archiological.png"> Archaeological</div>
+  <div class="legend-item"><img src="ancient.png"> Ancient</div>
+  <div class="legend-item"><img src="Entertainment.png"> Entertainment</div>
+  <div class="legend-item"><img src="Ent.png"> Entrepreneurship</div>
+  <div class="legend-item"><img src="bird.png"> Bird Watching</div>
+</div>
+
+<div id="map"></div>
+
+<!-- Rating Form -->
+<form id="ratingGoogleForm" action="https://docs.google.com/forms/d/e/1FAIpQLSerrh9Qx8HjdkZahOmV51fbP-NA0e061R2vIqF48NLreRpj3A/formResponse" method="POST" target="hidden_iframe" style="display:none;">
+  <input name="entry.1758488760" id="rating_google_siteName">
+  <input name="entry.1044116461" id="rating_google_rating">
+  <input name="entry.378619566" id="rating_google_issue">
+</form>
+
+<!-- Suggestion Form -->
+<form id="suggestGoogleForm" action="https://docs.google.com/forms/d/e/1FAIpQLSerrh9Qx8HjdkZahOmV51fbP-NA0e061R2vIqF48NLreRpj3A/formResponse" method="POST" target="hidden_iframe" style="display:none;">
+  <input name="entry.1758488760" id="suggest_google_siteName">
+  <input name="entry.1963560981" id="suggest_google_location">
+  <input name="entry.827649387" id="suggest_google_comments">
+  <input name="entry.1691371616" id="suggest_google_siteType">
+</form>
+<iframe name="hidden_iframe" style="display:none;"></iframe>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+  const map = L.map('map');
+  const bounds = L.latLngBounds([7.45, 79.70], [9.05, 80.05]);
+  map.fitBounds(bounds);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 19
+  }).addTo(map);
+
+  let marker = null;
+  let selectedPoint = null;
+  let pickedExisting = false;
+
+  map.on('click', function(e) {
+    if (marker) map.removeLayer(marker);
+    selectedPoint = e.latlng;
+    pickedExisting = false;
+    marker = L.marker(e.latlng).addTo(map).bindPopup("📍 Selected Location").openPopup();
+    document.getElementById('suggestSiteName').value = "";
+    document.getElementById('suggestLocation').value = `${selectedPoint.lat.toFixed(6)}, ${selectedPoint.lng.toFixed(6)}`;
+    showNotification("📍 Location selected! Switch to 'Suggest New Site' tab to add details.", "info");
+  });
+
+  function getCurrentLocation() {
+    showNotification("📍 Getting your location...", "info");
+    navigator.geolocation.getCurrentPosition(position => {
+      const latlng = [position.coords.latitude, position.coords.longitude];
+      map.setView(latlng, 16);
+      if (marker) map.removeLayer(marker);
+      selectedPoint = L.latLng(latlng[0], latlng[1]);
+      pickedExisting = false;
+      marker = L.marker(selectedPoint).addTo(map).bindPopup("📍 You are here").openPopup();
+      document.getElementById('suggestSiteName').value = "";
+      document.getElementById('suggestLocation').value = `${selectedPoint.lat.toFixed(6)}, ${selectedPoint.lng.toFixed(6)}`;
+      showNotification("✅ Location set successfully!", "success");
+    }, err => {
+      showNotification("❌ Location access denied. Please enable location services.", "error");
+    });
+  }
+
+  // Notification system
+  function showNotification(message, type = 'info') {
+    // Remove existing notifications
+    const existingNotifications = document.querySelectorAll('.notification');
+    existingNotifications.forEach(notification => notification.remove());
+
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+      <div class="notification-content">
+        <span class="notification-message">${message}</span>
+        <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
+      </div>
+    `;
+
+    document.body.appendChild(notification);
+
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+      if (notification.parentElement) {
+        notification.remove();
+      }
+    }, 5000);
+  }
+
+  // Tab functionality
+  function showTab(tabName) {
+    // Hide all form sections
+    document.querySelectorAll('.form-section').forEach(section => {
+      section.style.display = 'none';
+    });
+    
+    // Remove active class from all buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    
+    // Show selected section and activate button
+    if (tabName === 'rating') {
+      document.getElementById('rating-form').style.display = 'block';
+      document.querySelector('.tab-btn:first-child').classList.add('active');
+    } else {
+      document.getElementById('suggest-form').style.display = 'block';
+      document.querySelector('.tab-btn:last-child').classList.add('active');
+    }
+  }
+
+  function clearMap() {
+    if (marker) map.removeLayer(marker);
+    selectedPoint = null;
+    pickedExisting = false;
+  }
+
+  function clearRatingForm() {
+    document.getElementById('ratingForm').reset();
+  }
+
+  function clearSuggestForm() {
+    document.getElementById('suggestForm').reset();
+    clearMap();
+  }
+
+  // Rating form submission
+  function submitRatingForm() {
+    const siteName = document.getElementById('ratingSiteName').value;
+    const rating = document.getElementById('ratingValue').value;
+    const issue = document.getElementById('ratingIssue').value;
+
+    if (!siteName.trim()) {
+      showNotification("Please enter a site name.", "error");
+      return;
+    }
+
+    if (!rating) {
+      showNotification("Please select a rating.", "error");
+      return;
+    }
+
+    // Show loading state
+    const submitBtn = document.querySelector('#ratingForm button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<span class="loading"></span> Submitting...';
+    submitBtn.disabled = true;
+
+    // Set form values
+    document.getElementById('rating_google_siteName').value = siteName;
+    document.getElementById('rating_google_rating').value = rating;
+    document.getElementById('rating_google_issue').value = issue;
+
+    // Submit rating form
+    const form = document.getElementById('ratingGoogleForm');
+    const formData = new FormData();
+    formData.append('entry.1758488760', siteName);
+    formData.append('entry.1044116461', rating);
+    formData.append('entry.378619566', issue);
+
+    fetch('https://docs.google.com/forms/d/e/1FAIpQLSerrh9Qx8HjdkZahOmV51fbP-NA0e061R2vIqF48NLreRpj3A/formResponse', {
+      method: 'POST',
+      body: formData,
+      mode: 'no-cors'
+    })
+    .then(() => {
+      console.log('Rating submitted via fetch');
+      submitBtn.classList.add('success-animation');
+      showNotification("✅ Rating submitted successfully!", "success");
+      clearRatingForm();
+    })
+    .catch((error) => {
+      console.error('Rating submission error:', error);
+      try {
+        form.submit();
+        setTimeout(() => {
+          submitBtn.classList.add('success-animation');
+          showNotification("✅ Rating submitted successfully!", "success");
+          clearRatingForm();
+        }, 500);
+      } catch (formError) {
+        console.error('Rating form submission error:', formError);
+        showNotification("❌ There was an issue submitting the rating. Please try again.", "error");
+      }
+    })
+    .finally(() => {
+      // Reset button state
+      setTimeout(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('success-animation');
+      }, 2000);
+    });
+  }
+
+  // Suggestion form submission
+  function submitSuggestForm() {
+    const siteName = document.getElementById('suggestSiteName').value;
+    const location = document.getElementById('suggestLocation').value;
+    const comments = document.getElementById('suggestComments').value;
+    const type = document.getElementById('suggestType').value;
+
+    if (!siteName.trim()) {
+      showNotification("Please enter a site name.", "error");
+      return;
+    }
+
+    if (!location.trim()) {
+      showNotification("Please select a location on the map or use your current location.", "error");
+      return;
+    }
+
+    if (!comments.trim()) {
+      showNotification("Please enter comments/description.", "error");
+      return;
+    }
+
+    if (!type) {
+      showNotification("Please select a site type.", "error");
+      return;
+    }
+
+    // Show loading state
+    const submitBtn = document.querySelector('#suggestForm button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<span class="loading"></span> Submitting...';
+    submitBtn.disabled = true;
+
+    // Set form values
+    document.getElementById('suggest_google_siteName').value = siteName;
+    document.getElementById('suggest_google_location').value = location;
+    document.getElementById('suggest_google_comments').value = comments;
+    document.getElementById('suggest_google_siteType').value = type;
+
+    // Submit suggestion form
+    const form = document.getElementById('suggestGoogleForm');
+    const formData = new FormData();
+    formData.append('entry.1758488760', siteName);
+    formData.append('entry.1963560981', location);
+    formData.append('entry.827649387', comments);
+    formData.append('entry.1691371616', type);
+
+    fetch('https://docs.google.com/forms/d/e/1FAIpQLSerrh9Qx8HjdkZahOmV51fbP-NA0e061R2vIqF48NLreRpj3A/formResponse', {
+      method: 'POST',
+      body: formData,
+      mode: 'no-cors'
+    })
+    .then(() => {
+      console.log('Suggestion submitted via fetch');
+      submitBtn.classList.add('success-animation');
+      showNotification("✅ Suggestion submitted successfully!", "success");
+      clearSuggestForm();
+    })
+    .catch((error) => {
+      console.error('Suggestion submission error:', error);
+      try {
+        form.submit();
+        setTimeout(() => {
+          submitBtn.classList.add('success-animation');
+          showNotification("✅ Suggestion submitted successfully!", "success");
+          clearSuggestForm();
+        }, 500);
+      } catch (formError) {
+        console.error('Suggestion form submission error:', formError);
+        showNotification("❌ There was an issue submitting the suggestion. Please try again.", "error");
+      }
+    })
+    .finally(() => {
+      // Reset button state
+      setTimeout(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('success-animation');
+      }, 2000);
+    });
+  }
+
+  function loadTourismLayer(geojsonPath, iconPath) {
+    const customIcon = L.icon({
+      iconUrl: iconPath,
+      iconSize: [20, 20],
+      iconAnchor: [10, 10],
+      popupAnchor: [0, -10]
+    });
+
+    fetch(geojsonPath)
+      .then(response => {
+        if (!response.ok) throw new Error("GeoJSON file not found");
+        return response.json();
+      })
+      .then(data => {
+        L.geoJSON(data, {
+          pointToLayer: (feature, latlng) => L.marker(latlng, { icon: customIcon }),
+          onEachFeature: (feature, layer) => {
+            const name = feature.properties.site_name || "Unknown Site";
+            const type = feature.properties.TYPE || "Unknown Type";
+            const content = `<b>Site:</b> ${name}<br><b>Type:</b> ${type}`;
+            layer.bindTooltip(content, {
+              permanent: false,
+              direction: "top",
+              offset: [0, -10],
+              className: "map-label"
+            });
+            layer.bindPopup(content);
+            layer.on('click', () => {
+              // Switch to rating tab and populate the form
+              showTab('rating');
+              document.getElementById('ratingSiteName').value = name;
+              selectedPoint = null;
+              pickedExisting = true;
+            });
+          }
+        }).addTo(map);
+      })
+      .catch(error => {
+        console.error("GeoJSON loading error:", error);
+        alert("Could not load tourism points.");
+      });
+  }
+
+  loadTourismLayer('BEACH.geojson', 'Beach.png');
+  loadTourismLayer('ARCHIOLOGICAL.geojson', 'Archiological.png');
+  loadTourismLayer('ANCIENT.geojson', 'ancient.png');
+  loadTourismLayer('ENTERTAINMENT.geojson', 'Entertainment.png');
+  loadTourismLayer('Entrepreneurship_n.geojson', 'Ent.png');
+  loadTourismLayer('BIRD_WATCHING.geojson', 'bird.png');
+</script>
+</body>
+</html>
