@@ -471,7 +471,7 @@
 <div class="ui-container">
   <!-- Tab Navigation -->
   <div class="tab-nav">
-    <button class="tab-btn active" onclick="showTab('rating')">Rate Location</button>
+    <button class="tab-btn active" onclick="showTab('rating')">Rate a Tourism Site</button>
     <button class="tab-btn" onclick="showTab('suggest')">Suggest New Site</button>
   </div>
 
@@ -848,7 +848,13 @@
             layer.on('click', () => {
               // Switch to rating tab and populate the form
               showTab('rating');
-              document.getElementById('ratingSiteName').value = name;
+              if (name === "Unknown Site") {
+                document.getElementById('ratingSiteName').value = "";
+                document.getElementById('ratingSiteName').placeholder = "Enter site name";
+              } else {
+                document.getElementById('ratingSiteName').value = name;
+                document.getElementById('ratingSiteName').placeholder = "";
+              }
               selectedPoint = null;
               pickedExisting = true;
             });
